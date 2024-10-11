@@ -18,7 +18,31 @@ class AirportSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "closest_big_city"]
 
 
+class AirportRouteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Airport
+        fields = ["name", "closest_big_city"]
+
+
 class RouteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Route
+        fields = ["id", "source", "destination", "distance"]
+
+
+class RouteListSerializer(serializers.ModelSerializer):
+    source = serializers.StringRelatedField()
+    destination = serializers.StringRelatedField()
+
+    class Meta:
+        model = Route
+        fields = ["id", "source", "destination", "distance"]
+
+
+class RouteRetrieveSerializer(serializers.ModelSerializer):
+    source = AirportRouteSerializer()
+    destination = AirportRouteSerializer()
+
     class Meta:
         model = Route
         fields = ["id", "source", "destination", "distance"]

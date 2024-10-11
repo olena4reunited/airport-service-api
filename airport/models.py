@@ -13,10 +13,10 @@ class Airport(models.Model):
 
 class Route(models.Model):
     source = models.ForeignKey(
-        Airport, on_delete=models.CASCADE, related_name="routes"
+        "Airport", on_delete=models.CASCADE, related_name="routes_from"
     )
     destination = models.ForeignKey(
-        Airport, on_delete=models.CASCADE, related_name="routes"
+        "Airport", on_delete=models.CASCADE, related_name="routes_to"
     )
     distance = models.IntegerField()
 
@@ -24,7 +24,7 @@ class Route(models.Model):
         return f"{self.source} - {self.destination}"
 
 
-class AirplaneType:
+class AirplaneType(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
@@ -36,11 +36,9 @@ class Airplane(models.Model):
     rows = models.IntegerField()
     seats_in_row = models.IntegerField()
     airplane_type = models.ForeignKey(
-        AirplaneType,
+        "AirplaneType",
         on_delete=models.CASCADE,
         related_name="airplanes",
-        null=True,
-        blank=True,
     )
 
     @property
@@ -61,17 +59,17 @@ class Crew(models.Model):
 
 class Flight(models.Model):
     route = models.ForeignKey(
-        Route, on_delete=models.CASCADE, related_name="flights"
+        "Route", on_delete=models.CASCADE, related_name="flights"
     )
     airplane = models.ForeignKey(
-        Airplane, on_delete=models.CASCADE, related_name="flights"
+        "Airplane", on_delete=models.CASCADE, related_name="flights"
     )
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField(Crew, related_name="flights")
 
 
-class Order:
+class Order(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -84,10 +82,10 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
     flight = models.ForeignKey(
-        Flight, on_delete=models.CASCADE, related_name="tickets"
+        "Flight", on_delete=models.CASCADE, related_name="tickets"
     )
     order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="tickets"
+        "Order", on_delete=models.CASCADE, related_name="tickets"
     )
 
     @staticmethod

@@ -30,7 +30,7 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = ["id", "source", "destination", "distance"]
 
 
-class RouteListSerializer(serializers.ModelSerializer):
+class RouteListSerializer(RouteSerializer):
     source = serializers.StringRelatedField()
     destination = serializers.StringRelatedField()
 
@@ -39,9 +39,9 @@ class RouteListSerializer(serializers.ModelSerializer):
         fields = ["id", "source", "destination", "distance"]
 
 
-class RouteRetrieveSerializer(serializers.ModelSerializer):
-    source = AirportRouteSerializer()
-    destination = AirportRouteSerializer()
+class RouteRetrieveSerializer(RouteSerializer):
+    source = AirportRouteSerializer(read_only=True)
+    destination = AirportRouteSerializer(read_only=True)
 
     class Meta:
         model = Route
@@ -57,7 +57,30 @@ class AirplaneTypeSerializer(serializers.ModelSerializer):
 class AirplaneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airplane
-        fields = ["id", "name", "rows", "seats_in_row", "airplane_type"]
+        fields = ["id", "name", "airplane_type", "capacity"]
+
+
+class AirplaneListSerializer(serializers.ModelSerializer):
+    airplane_type = serializers.CharField(source="airplane_type.name")
+
+    class Meta:
+        model = Airplane
+        fields = ["id", "name", "airplane_type", "capacity"]
+
+
+class AirplaneRetrieveSerializer(AirplaneSerializer):
+    airplane_type = serializers.CharField(source="airplane_type.name")
+
+    class Meta:
+        model = Airplane
+        fields = [
+            "id",
+            "name",
+            "airplane_type",
+            "rows",
+            "seats_in_row",
+            "capacity",
+        ]
 
 
 class CrewSerializer(serializers.ModelSerializer):

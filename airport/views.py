@@ -1,5 +1,7 @@
+from django.contrib.auth.models import AnonymousUser
 from django.db.models import F, Count
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
+from rest_framework.viewsets import GenericViewSet
 
 from airport.models import (
     Airport,
@@ -26,6 +28,7 @@ from airport.serializers import (
     AirplaneListSerializer,
     FlightListSerializer,
     FlightRetrieveSerializer,
+    OrderListSerializer,
 )
 
 
@@ -122,10 +125,37 @@ class FlightViewSet(viewsets.ModelViewSet):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+    def get_queryset(self):
+        if isinstance(self.request.user, AnonymousUser):
+            return Order.objects.none()
+
+        return (
+            Order.objects.prefetch_related("tickets")
+            .filter(user=self.request.user, tickets__isnull=False)
+            .distinct()
+        )
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListSerializer
+
+        return OrderSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class TicketViewSet(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
+class TicketViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet
+):
     serializer_class = TicketSerializer
+
+    def get_queryset(self):
+        if isinstance(self.request.user, AnonymousUser):
+            return Ticket.objects.none()
+
+        queryset = Ticket.objects.select_related("flight", "order").filter(
+            order__user=self.request.user
+        )
+
+        return queryset

@@ -69,7 +69,9 @@ class AirplaneListSerializer(serializers.ModelSerializer):
 
 
 class AirplaneRetrieveSerializer(AirplaneSerializer):
-    airplane_type = serializers.CharField(source="airplane_type.name")
+    airplane_type = serializers.CharField(
+        source="airplane_type.name", read_only=True
+    )
 
     class Meta:
         model = Airplane

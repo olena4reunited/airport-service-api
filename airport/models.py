@@ -46,7 +46,7 @@ class Airplane(models.Model):
         return self.rows * self.seats_in_row
 
     def __str__(self):
-        return self.name
+        return f"{self.name} {self.airplane_type.name}"
 
 
 class Crew(models.Model):

@@ -48,6 +48,15 @@ class RouteRetrieveSerializer(RouteSerializer):
         fields = ["id", "source", "destination", "distance"]
 
 
+class RouteFlightSerializer(RouteSerializer):
+    source = AirportRouteSerializer(read_only=True)
+    destination = AirportRouteSerializer(read_only=True)
+
+    class Meta:
+        model = Route
+        fields = ["source", "destination", "distance"]
+
+
 class AirplaneTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AirplaneType
@@ -85,10 +94,26 @@ class AirplaneRetrieveSerializer(AirplaneSerializer):
         ]
 
 
+class AirplaneFlightSerializer(serializers.ModelSerializer):
+    airplane_type = serializers.CharField(
+        source="airplane_type.name", read_only=True
+    )
+
+    class Meta:
+        model = Airplane
+        fields = ["name", "airplane_type"]
+
+
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
         fields = ["id", "first_name", "last_name"]
+
+
+class CrewFlightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Crew
+        fields = ["first_name", "last_name"]
 
 
 class FlightSerializer(serializers.ModelSerializer):
@@ -101,6 +126,46 @@ class FlightSerializer(serializers.ModelSerializer):
             "departure_time",
             "arrival_time",
             "crew",
+        ]
+
+
+class FlightListSerializer(serializers.ModelSerializer):
+    route = serializers.StringRelatedField()
+    airplane = serializers.StringRelatedField()
+    crew = serializers.StringRelatedField(many=True)
+    tickets_available = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Flight
+        fields = [
+            "id",
+            "route",
+            "airplane",
+            "departure_time",
+            "arrival_time",
+            "crew",
+            "tickets_available",
+        ]
+
+
+class FlightRetrieveSerializer(serializers.ModelSerializer):
+    route = RouteFlightSerializer(read_only=True)
+    airplane = AirplaneFlightSerializer(read_only=True)
+    crew = CrewFlightSerializer(many=True, read_only=True)
+    taken_seats = serializers.SlugRelatedField(
+        slug_field="seat", source="tickets", many=True, read_only=True
+    )
+
+    class Meta:
+        model = Flight
+        fields = [
+            "id",
+            "route",
+            "airplane",
+            "departure_time",
+            "arrival_time",
+            "crew",
+            "taken_seats",
         ]
 
 

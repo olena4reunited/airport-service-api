@@ -25,8 +25,7 @@ class FlightFilter(filters.FilterSet):
             "arrival_time",
             "route__source",
             "route__destination",
-            "airplane__airplane_type__name",
-            "crew_member",
+            "tickets_available",
         ]
 
     def filter_tickets_available(self, queryset, name, value):

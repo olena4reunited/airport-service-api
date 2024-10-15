@@ -4,7 +4,7 @@ from django.db.models import F, Count
 from rest_framework import viewsets, mixins
 from rest_framework.viewsets import GenericViewSet
 
-from airport.filters import AirportFilter, OrderFilter
+from airport.filters import AirportFilter, OrderFilter, FlightFilter
 from airport.models import (
     Airport,
     Route,

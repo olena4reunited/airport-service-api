@@ -1,8 +1,10 @@
 from django.contrib.auth.models import AnonymousUser
+from django_filters import rest_framework as filters
 from django.db.models import F, Count
 from rest_framework import viewsets, mixins
 from rest_framework.viewsets import GenericViewSet
 
+from airport.filters import AirportFilter, OrderFilter
 from airport.models import (
     Airport,
     Route,
@@ -13,6 +15,7 @@ from airport.models import (
     Order,
     Ticket,
 )
+from airport.pagination import CustomPagination
 from airport.serializers import (
     AirportSerializer,
     RouteSerializer,
@@ -35,9 +38,14 @@ from airport.serializers import (
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
     serializer_class = AirportSerializer
+    pagination_class = CustomPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AirportFilter
 
 
 class RouteViewSet(viewsets.ModelViewSet):
+    pagination_class = CustomPagination
+
     def get_queryset(self):
         queryset = Route.objects.all()
 
@@ -58,9 +66,12 @@ class RouteViewSet(viewsets.ModelViewSet):
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = AirplaneType.objects.all()
     serializer_class = AirplaneTypeSerializer
+    pagination_class = CustomPagination
 
 
 class AirplaneViewSet(viewsets.ModelViewSet):
+    pagination_class = CustomPagination
+
     def get_queryset(self):
         queryset = Airplane.objects.all()
 
@@ -81,9 +92,14 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
+    pagination_class = CustomPagination
 
 
 class FlightViewSet(viewsets.ModelViewSet):
+    pagination_class = CustomPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FlightFilter
+
     def get_queryset(self):
         queryset = Flight.objects.all()
 
@@ -120,6 +136,8 @@ class FlightViewSet(viewsets.ModelViewSet):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
+    pagination_class = CustomPagination
+
     def get_queryset(self):
         if isinstance(self.request.user, AnonymousUser):
             return Order.objects.none()
@@ -139,11 +157,15 @@ class OrderViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = OrderFilter
+
 
 class TicketViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet
 ):
     serializer_class = TicketSerializer
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         if isinstance(self.request.user, AnonymousUser):

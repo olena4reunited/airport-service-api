@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "rest_framework_simplejwt",
     "drf_spectacular",
+    "django_filters",
     # local
     "airport",
     "user",

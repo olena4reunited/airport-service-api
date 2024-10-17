@@ -16,6 +16,16 @@ from airport.models import (
     Ticket,
 )
 from airport.pagination import CustomPagination
+from airport.schemas.airport_schemas import (
+    airplane_type_schema,
+    airplane_schema,
+    crew_schema,
+    flight_schema,
+    order_schema,
+    ticket_schema,
+    airport_schema,
+    route_schema,
+)
 from airport.serializers import (
     AirportSerializer,
     RouteSerializer,
@@ -35,6 +45,7 @@ from airport.serializers import (
 )
 
 
+@airport_schema
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
     serializer_class = AirportSerializer
@@ -43,6 +54,7 @@ class AirportViewSet(viewsets.ModelViewSet):
     filterset_class = AirportFilter
 
 
+@route_schema
 class RouteViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
@@ -63,12 +75,14 @@ class RouteViewSet(viewsets.ModelViewSet):
         return RouteSerializer
 
 
+@airplane_type_schema
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = AirplaneType.objects.all()
     serializer_class = AirplaneTypeSerializer
     pagination_class = CustomPagination
 
 
+@airplane_schema
 class AirplaneViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
@@ -89,12 +103,14 @@ class AirplaneViewSet(viewsets.ModelViewSet):
         return AirplaneSerializer
 
 
+@crew_schema
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
     pagination_class = CustomPagination
 
 
+@flight_schema
 class FlightViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
@@ -135,6 +151,7 @@ class FlightViewSet(viewsets.ModelViewSet):
         return FlightSerializer
 
 
+@order_schema
 class OrderViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
@@ -161,6 +178,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     filterset_class = OrderFilter
 
 
+@ticket_schema
 class TicketViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet
 ):

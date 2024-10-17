@@ -1,7 +1,10 @@
+from drf_spectacular import openapi
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     extend_schema_view,
     extend_schema,
     OpenApiExample,
+    OpenApiParameter,
 )
 from rest_framework import status
 from airport.serializers import (
@@ -9,10 +12,8 @@ from airport.serializers import (
     RouteListSerializer,
     RouteRetrieveSerializer,
     FlightListSerializer,
-    FlightRetrieveSerializer,
     AirplaneTypeSerializer,
     AirplaneListSerializer,
-    AirplaneRetrieveSerializer,
     CrewSerializer,
     OrderListSerializer,
     OrderSerializer,
@@ -231,38 +232,41 @@ flight_schema = extend_schema_view(
     list=extend_schema(
         description="Retrieve a list of flights with optional filtering by departure time, arrival time, and available tickets.",
         parameters=[
-            {
-                "name": "departure_time",
-                "required": False,
-                "type": "string",
-                "format": "date-time",
-                "description": "Filter flights departing after this time.",
-            },
-            {
-                "name": "arrival_time",
-                "required": False,
-                "type": "string",
-                "format": "date-time",
-                "description": "Filter flights arriving before this time.",
-            },
-            {
-                "name": "route__source",
-                "required": False,
-                "type": "string",
-                "description": "Filter flights by the source airport name.",
-            },
-            {
-                "name": "route__destination",
-                "required": False,
-                "type": "string",
-                "description": "Filter flights by the destination airport name.",
-            },
-            {
-                "name": "tickets_available",
-                "required": False,
-                "type": "integer",
-                "description": "Filter flights by the minimum number of available tickets.",
-            },
+            OpenApiParameter(
+                "departure_time",
+                location=OpenApiParameter.QUERY,
+                description="Filter flights departing after this time.",
+                type=OpenApiTypes.DATE,
+                required=False,
+            ),
+            OpenApiParameter(
+                "arrival_time",
+                location=OpenApiParameter.QUERY,
+                description="Filter flights arriving before this time.",
+                type=OpenApiTypes.DATE,
+                required=False,
+            ),
+            OpenApiParameter(
+                "route__source",
+                location=OpenApiParameter.QUERY,
+                description="Filter flights by the source airport name.",
+                type=OpenApiTypes.STR,
+                required=False,
+            ),
+            OpenApiParameter(
+                "route__destination",
+                location=OpenApiParameter.QUERY,
+                description="Filter flights by the destination airport name.",
+                type=OpenApiTypes.STR,
+                required=False,
+            ),
+            OpenApiParameter(
+                "tickets_available",
+                location=OpenApiParameter.QUERY,
+                description="Filter flights by the minimum number of available tickets.",
+                type=OpenApiTypes.INT,
+                required=False,
+            ),
         ],
         responses={
             status.HTTP_200_OK: FlightListSerializer(many=True),

@@ -15,7 +15,6 @@ from airport.models import (
     Order,
     Ticket,
 )
-from airport.pagination import CustomPagination
 from airport.schemas.airport_schemas import (
     airplane_type_schema,
     airplane_schema,
@@ -49,15 +48,12 @@ from airport.serializers import (
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
     serializer_class = AirportSerializer
-    pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AirportFilter
 
 
 @route_schema
 class RouteViewSet(viewsets.ModelViewSet):
-    pagination_class = CustomPagination
-
     def get_queryset(self):
         queryset = Route.objects.all()
 
@@ -79,13 +75,10 @@ class RouteViewSet(viewsets.ModelViewSet):
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = AirplaneType.objects.all()
     serializer_class = AirplaneTypeSerializer
-    pagination_class = CustomPagination
 
 
 @airplane_schema
 class AirplaneViewSet(viewsets.ModelViewSet):
-    pagination_class = CustomPagination
-
     def get_queryset(self):
         queryset = Airplane.objects.all()
 
@@ -107,12 +100,10 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
-    pagination_class = CustomPagination
 
 
 @flight_schema
 class FlightViewSet(viewsets.ModelViewSet):
-    pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FlightFilter
 
@@ -153,8 +144,6 @@ class FlightViewSet(viewsets.ModelViewSet):
 
 @order_schema
 class OrderViewSet(viewsets.ModelViewSet):
-    pagination_class = CustomPagination
-
     def get_queryset(self):
         if isinstance(self.request.user, AnonymousUser):
             return Order.objects.none()
@@ -183,7 +172,6 @@ class TicketViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet
 ):
     serializer_class = TicketSerializer
-    pagination_class = CustomPagination
 
     def get_queryset(self):
         if isinstance(self.request.user, AnonymousUser):

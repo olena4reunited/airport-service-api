@@ -116,18 +116,9 @@ class Ticket(models.Model):
             self.row, self.seat, self.flight.airplane, ValidationError
         )
 
-    def save(
-        self,
-        *args,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
-    ):
+    def save(self, *args, **kwargs):
         self.full_clean()
-        return super(Ticket, self).save(
-            force_insert, force_update, using, update_fields
-        )
+        return super().save()
 
     class Meta:
         unique_together = ("flight", "row", "seat")

@@ -15,4 +15,4 @@ urlpatterns = [
     path("me/", ManageUserView.as_view(), name="user_me"),
 ]
 
-app_name = "user"
+app_name = "users"

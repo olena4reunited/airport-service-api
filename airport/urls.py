@@ -27,4 +27,4 @@ router.register(r"tickets", TicketViewSet, basename="ticket")
 
 urlpatterns = [path("", include(router.urls))]
 
-app_name = "airport"
+app_name = "airports"

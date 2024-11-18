@@ -1,7 +1,9 @@
 import os
+import time
 
 import psycopg
 from django.core.management import BaseCommand
+from django.db.utils import OperationalError
 
 
 class Command(BaseCommand):
@@ -17,8 +19,8 @@ class Command(BaseCommand):
                     host=os.getenv("POSTGRES_HOST"),
                     port=os.getenv("POSTGRES_PORT"),
                 )
-                self.stdout.write(
-                    self.style.SUCCESS("Successfully connected to database")
-                )
-            finally:
-                self.stdout.write(self.style.SUCCESS("Database available!"))
+            except OperationalError:
+                self.stdout.write("Database unavailable, trying to connect again...")
+                time.sleep(2)
+
+            self.stdout.write(self.style.SUCCESS("Successfully connected to database!"))

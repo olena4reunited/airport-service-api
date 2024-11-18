@@ -1,5 +1,5 @@
 FROM python:3.12.6-alpine3.20
-LABEL authors="olenacherneha@proton.me"
+LABEL authors="olena.cherneha4@gmail.com"
 
 ENV PYTHONUNBUFFERED 1
 

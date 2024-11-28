@@ -48,7 +48,7 @@ python manage.py runserver
 }
 ```
 
-2) login via your credentials: `api/user/register/`, body:
+2) login via your credentials and get JWT token to access: `api/user/token/`, body:
 
 ```json
 {
@@ -57,9 +57,7 @@ python manage.py runserver
 }
 ```
 
----
-
-Include the accessToken in the Authorization header of your requests, formatted as:
+3. add your personal access token to headers, formatted as:
 
 ```makefile
     Authorization: Bearer <your-accessToken>
